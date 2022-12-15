@@ -1,11 +1,17 @@
 <template>
   <v-app>
-    <NavBar />
+    <!-- <NavBar /> -->
     <v-container>
       <h1 class="titledoc">เลือกหมอที่ต้องการจอง</h1>
       <v-row dense>
-        <v-col sm="6" v-for="(doctors) in detailindoctor" :key="doctors.doc_id">
-          <v-dialog v-model="dialog" persistent max-width="600px">
+        <v-col sm="6">
+          <v-dialog
+            v-model="removeTagDialogs[doctors.doc_id]"
+            persistent
+            max-width="600px"
+            v-for="doctors in detailindoctor"
+            :key="doctors.doc_id"
+          >
             <template v-slot:activator="{ on, attrs }">
               <v-card
                 class="mx-auto my-12"
@@ -29,12 +35,8 @@
                 >
               </v-card>
             </template>
-
             <v-card>
-              <v-img
-                height="400"
-                :src="doctors.image"
-              ></v-img>
+              <v-img height="400" :src="doctors.image"></v-img>
               <v-card-text
                 style="font-size: 26px; font-weight: bold; color: blue"
                 >Name: {{ doctors.name }}
@@ -45,10 +47,18 @@
               >
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="dialog = false">
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="removeTagDialogs[doctors.doc_id] = false"
+                >
                   Close
                 </v-btn>
-                <v-btn color="blue darken-1" text @click="dialog = false">
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="removeTagDialogs[doctors.doc_id] = false"
+                >
                   Save
                 </v-btn>
               </v-card-actions>
@@ -75,20 +85,21 @@ body {
 }
 </style>
 <script>
-import NavBar from "../components/NavBar";
+// import NavBar from "../components/NavBar";
 export default {
-  components: {
-    NavBar,
-  },
+  //   components: {
+  //     NavBar,
+  //   },
   data() {
     return {
+      removeTagDialogs: {},
       dialog: false,
       detailindoctor: [
         {
           doc_id: 1,
           name: "BK",
           branch: "neurologist",
-          image: require("../assets/HospitalImages.png"),
+          image: require("../assets/Hospital.png"),
         },
         {
           doc_id: 2,
@@ -97,9 +108,19 @@ export default {
           image: require("../assets/logo.png"),
         },
         { doc_id: 3, name: "Bank", branch: "Gastroenterologists" },
-        { doc_id: 4, name: "Tee", branch: "Dermatologists", image: require("../assets/logo.png") },
+        {
+          doc_id: 4,
+          name: "Tee",
+          branch: "Dermatologists",
+          image: require("../assets/logo.png"),
+        },
       ],
     };
+  },
+  methods: {
+    removeResearchTag(name, id) {
+      this.tags = this.tags.filter((t) => t.id !== id);
+    },
   },
 };
 </script>
