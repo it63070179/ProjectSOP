@@ -33,10 +33,5 @@
 <script>
 export default {
   name: "NavBar",
-  data: () => ({
-    dialog: false,
-    date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-    menu: false,
-  }),
 };
 </script>
