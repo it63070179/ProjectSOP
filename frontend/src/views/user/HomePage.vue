@@ -1,16 +1,14 @@
 <template>
   <v-app>
-    <!-- <NavBar /> -->
+    <NavBar />
     <v-container>
       <h1 class="titledoc">เลือกหมอที่ต้องการจอง</h1>
       <v-row dense>
-        <v-col sm="6">
+        <v-col sm="6" v-for="doctors in detailindoctor" :key="doctors.doc_id">
           <v-dialog
-            v-model="removeTagDialogs[doctors.doc_id]"
+            v-model="Dialogs[doctors.doc_id]"
             persistent
-            max-width="600px"
-            v-for="doctors in detailindoctor"
-            :key="doctors.doc_id"
+            max-width="900px"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-card
@@ -35,32 +33,56 @@
                 >
               </v-card>
             </template>
-            <v-card>
-              <v-img height="400" :src="doctors.image"></v-img>
+            <v-card >
+              <v-img :src="doctors.image"></v-img>
               <v-card-text
-                style="font-size: 26px; font-weight: bold; color: blue"
+                style="
+                  font-size: 26px;
+                  font-weight: bold;
+                  color: blue;
+                  text-align: center;
+                "
                 >Name: {{ doctors.name }}
               </v-card-text>
               <v-card-text
-                style="font-size: 26px; font-weight: bold; color: green"
+                style="
+                  font-size: 26px;
+                  font-weight: bold;
+                  color: green;
+                  text-align: center;
+                "
                 >Branch: {{ doctors.branch }}</v-card-text
               >
+              <v-card-text style="font-size: 20px; font-weight: bold">{{
+                doctors.description
+              }}</v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="removeTagDialogs[doctors.doc_id] = false"
+                  class="btn"
+                  elevation="3"
+                  rounded
+                  large
+                  color="#E63946"
+                  @click="Dialogs[doctors.doc_id] = false"
                 >
-                  Close
+                  ย้อนกลับ
                 </v-btn>
+                <router-link to="/AppointmentUser">
                 <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="removeTagDialogs[doctors.doc_id] = false"
+                  style="margin-left: 30px"
+                  class="btn"
+                  v-bind="attrs"
+                  v-on="on"
+                  elevation="3"
+                  rounded
+                  x-large
+                  color="#8539E6"
+                  @click="Dialogs[doctors.doc_id] = false"
                 >
-                  Save
+                  จองหมอคนนี้
                 </v-btn>
+                </router-link>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -72,10 +94,12 @@
 <style>
 body {
   background-color: #a8dadc;
+  
 }
 .v-application--wrap {
   min-height: 0vh !important;
   background-color: #a8dadc;
+  
 }
 .titledoc {
   text-align: center;
@@ -85,42 +109,46 @@ body {
 }
 </style>
 <script>
-// import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar";
 export default {
-  //   components: {
-  //     NavBar,
-  //   },
+  components: {
+    NavBar,
+  },
   data() {
     return {
-      removeTagDialogs: {},
+      Dialogs: {},
       dialog: false,
       detailindoctor: [
         {
           doc_id: 1,
           name: "BK",
           branch: "neurologist",
-          image: require("../assets/Hospital.png"),
+          image: require("../assets/HospitalImages.png"),
+          description: "asdasdasdasdasdasdasdasdasdasdsadada1",
         },
         {
           doc_id: 2,
           name: "Sin",
           branch: "Cardiologists",
           image: require("../assets/logo.png"),
+          description: "asdasdasdasdasdasdasdasdasdasdsadada2",
         },
-        { doc_id: 3, name: "Bank", branch: "Gastroenterologists" },
+        {
+          doc_id: 3,
+          name: "Bank",
+          branch: "Gastroenterologists",
+          image: require("../assets/HospitalImages.png"),
+          description: "asdasdasdasdasdasdasdasdasdasdsadada3",
+        },
         {
           doc_id: 4,
           name: "Tee",
           branch: "Dermatologists",
           image: require("../assets/logo.png"),
+          description: "asdasdasdasdasdasdasdasdasdasdsadada4",
         },
       ],
     };
-  },
-  methods: {
-    removeResearchTag(name, id) {
-      this.tags = this.tags.filter((t) => t.id !== id);
-    },
   },
 };
 </script>
