@@ -45,7 +45,13 @@
         class="text-subtitle-2 red--text"
         v-else-if="v$.Password.minLength.$invalid"
       >
-        This field should be at least 3 characters long
+        This field should be at least 8 characters long
+      </p>
+      <p
+        class="text-subtitle-2 red--text"
+        v-else-if="v$.Password.ValidatePassword.$invalid"
+      >
+        This field should be harder password
       </p>
     </template>
     <p class="labelOnTextField" style="right: 14%">Confirm Password</p>
@@ -65,7 +71,13 @@
         class="text-subtitle-2 red--text"
         v-else-if="v$.ConfirmPassword.minLength.$invalid"
       >
-        This field should be at least 3 characters long
+        This field should be at least 8 characters long
+      </p>
+      <p
+        class="text-subtitle-2 red--text"
+        v-else-if="v$.ConfirmPassword.sameAsPassword.$invalid"
+      >
+        This field not equal password field
       </p>
     </template>
     <p class="labelOnTextField" style="right: 23%">Email</p>
@@ -79,6 +91,12 @@
         v-else-if="v$.Email.minLength.$invalid"
       >
         This field should be at least 3 characters long
+      </p>
+      <p
+        class="text-subtitle-2 red--text"
+        v-else-if="v$.Email.ValidateEmail.$invalid"
+      >
+        This field is invalid email
       </p>
     </template>
     <p class="labelOnTextField">Gender</p>
@@ -151,7 +169,31 @@
 </style>
 <script>
 import { useVuelidate } from "@vuelidate/core";
-import { required, minLength } from "@vuelidate/validators";
+import { required, minLength, sameAs } from "@vuelidate/validators";
+
+const ValidatePassword = (value) => {
+  const ReduxPassword = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$";
+  if (value.match(ReduxPassword)) {
+    // console.log("password match");
+    return true;
+  } else {
+    // console.log("password not match");
+    return false;
+  }
+};
+
+const ValidateEmail = (value) => {
+  const ReduxEmail =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (value.match(ReduxEmail)) {
+    // console.log("Email Match");
+    return true;
+  } else {
+    // console.log("Email Not Match");
+    return false;
+  }
+};
+
 export default {
   // name: "login",
   setup() {
@@ -163,7 +205,6 @@ export default {
     return {
       Name: "",
       Username: "",
-      ReduxPassword: "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$",
       Password: "",
       ConfirmPassword: "",
       Email: "",
@@ -175,15 +216,18 @@ export default {
     return {
       Name: { required, minLength: minLength(3) },
       Username: { required, minLength: minLength(3) },
-      Password: { required, minLength: minLength(3) },
-      ConfirmPassword: { required, minLength: minLength(3) },
-      Email: { required, minLength: minLength(3) },
+      Password: {
+        required,
+        minLength: minLength(8),
+        ValidatePassword,
+      },
+      ConfirmPassword: {
+        required,
+        minLength: minLength(8),
+        sameAsPassword: sameAs(this.Password),
+      },
+      Email: { required, minLength: minLength(3), ValidateEmail },
     };
-  },
-  methods: {
-    ValidatePassword() {
-      
-    },
   },
 };
 </script>
