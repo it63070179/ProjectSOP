@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <img src="../assets/Hospital.png" class="icon_img" />
+    <img src="../../assets/Hospital.png" class="icon_img" />
     <p class="labelOnTextField" style="right: 22.5%">Name</p>
     <v-text-field label="Enter Your Name" solo v-model="v$.Name.$model" />
     <template v-if="v$.Name.$error">
@@ -107,6 +107,7 @@
       v-model="Gender"
     ></v-select>
     <v-btn
+      @click="addUser()"
       depressed
       color="#FB9C9C"
       style="margin-bottom: 10%; width: 40%; height: 6.5%"
@@ -121,48 +122,38 @@
   align-items: center;
   overflow: hidden;
 }
-
 .icon_img {
   width: 40%;
   margin-bottom: -2%;
 }
-
 .v-application p {
   margin-bottom: 10px;
 }
-
 .v-label {
   opacity: 1;
 }
-
 .v-text-field {
   margin-top: 0;
 }
-
 .v-text-field.v-text-field--enclosed {
   width: 70%;
   margin-left: 20%;
 }
-
 .v-input__slot {
   margin-bottom: 0;
 }
-
 .login {
   background-color: #fff;
   width: 30%;
   text-align: center;
 }
-
 .labelOnTextField {
   position: relative;
   right: 20%;
 }
-
 .theme--light.v-btn {
   color: #fff;
 }
-
 .v-btn__content {
   font-size: 1.2rem;
 }
@@ -170,7 +161,7 @@
 <script>
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength, sameAs } from "@vuelidate/validators";
-
+import axios from "axios";
 const ValidatePassword = (value) => {
   const ReduxPassword = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$";
   if (value.match(ReduxPassword)) {
@@ -181,7 +172,6 @@ const ValidatePassword = (value) => {
     return false;
   }
 };
-
 const ValidateEmail = (value) => {
   const ReduxEmail =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -193,7 +183,6 @@ const ValidateEmail = (value) => {
     return false;
   }
 };
-
 export default {
   // name: "login",
   setup() {
@@ -228,6 +217,25 @@ export default {
       },
       Email: { required, minLength: minLength(3), ValidateEmail },
     };
+  },
+  methods: {
+    addUser() {
+      axios
+        .post("http://localhost:3000/user/register", {
+          name: this.Name,
+          username: this.Username,
+          passowrd: this.Password,
+          email: this.Email,
+          gender: this.Gender,
+          role : "user"
+        })
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
 };
 </script>
