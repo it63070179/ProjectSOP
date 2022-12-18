@@ -30,5 +30,13 @@ public class UserQueryHandler {
         }
         return usersRest;
     }
+
+    @QueryHandler
+    UserRestModel findByUsernameAndPassword(FindByUsernameAndPassword query){
+        UserRestModel userRest = new UserRestModel();
+        UserEntity user = userRepository.findByUsernameAndPassword(query.getUsername(), query.getPassword());
+        BeanUtils.copyProperties(user, userRest);
+        return userRest;
+    }
 }
 
