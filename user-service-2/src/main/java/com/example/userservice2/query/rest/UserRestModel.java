@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class UserRestModel {
-    private String _id;
+
+    private String id;
     private String name;
     private String username;
     private String password;

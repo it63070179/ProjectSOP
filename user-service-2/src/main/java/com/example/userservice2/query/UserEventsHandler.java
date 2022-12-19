@@ -17,12 +17,9 @@ public class UserEventsHandler {
 
     @EventHandler
     public void on(UserUpdateEvent event){
-        System.out.println(event);
-        UserEntity userEntity = userRepository.findUserById(event.getId());
-        System.out.println(userEntity);
-        userEntity.setName(event.getName());
-        userEntity.setGender(event.getGender());
-//        BeanUtils.copyProperties(event, userEntity);
+        System.out.println("event : " + event);
+        UserEntity userEntity = new UserEntity();
+        BeanUtils.copyProperties(event, userEntity);
         userRepository.save(userEntity);
     }
 }
