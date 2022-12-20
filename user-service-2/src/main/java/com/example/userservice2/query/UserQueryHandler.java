@@ -37,4 +37,12 @@ public class UserQueryHandler {
         }
         return usersRest;
     }
+
+    @QueryHandler
+    UserRestModel findByEmail(FindUserByEmailQuery query){
+        UserRestModel userRestModel = new UserRestModel();
+        UserEntity storeUsers = userRepository.findByEmail(query.getEmail());
+        BeanUtils.copyProperties(storeUsers, userRestModel);
+        return userRestModel;
+    }
 }
