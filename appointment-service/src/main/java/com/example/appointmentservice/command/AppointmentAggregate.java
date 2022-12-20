@@ -38,9 +38,6 @@ public class AppointmentAggregate {
         this.time = appointmentCreatedEvent.getTime();
         this.description = appointmentCreatedEvent.getDescription();
         this.doctorname = appointmentCreatedEvent.getDoctorname();
-
-
-
     }
 
 }
