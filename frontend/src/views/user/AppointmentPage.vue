@@ -50,6 +50,28 @@
                 >
                   This field should be at least 3 characters long
                 </p>
+                <p
+                  class="text-subtitle-2 red--text"
+                  v-else-if="v$.Email.ValidateEmail.$invalid"
+                >
+                  This field is invalid email
+                </p>
+              </template>
+            </v-col>
+
+            <v-col cols="12">
+              <v-textarea v-model="v$.Description.$model" color="teal" outlined>
+                <template v-slot:label>
+                  <div>Description</div>
+                </template>
+              </v-textarea>
+              <template v-if="v$.Description.$error">
+                <p
+                  class="text-subtitle-2 red--text"
+                  v-if="v$.Description.required.$invalid"
+                >
+                  This field is requried
+                </p>
               </template>
             </v-col>
 
@@ -83,26 +105,10 @@
               <v-select
                 label="Time"
                 outlined
-                v-model="v$.Time.$model"
+                v-model="v$.time.$model"
                 :items="SelectTime"
                 :rules="rules.Times"
               ></v-select>
-            </v-col>
-
-            <v-col cols="12">
-              <v-textarea v-model="v$.Description.$model" color="teal" outlined>
-                <template v-slot:label>
-                  <div>Description</div>
-                </template>
-              </v-textarea>
-              <template v-if="v$.Description.$error">
-                <p
-                  class="text-subtitle-2 red--text"
-                  v-if="v$.Description.required.$invalid"
-                >
-                  This field is requried
-                </p>
-              </template>
             </v-col>
 
             <v-dialog v-model="dialog" persistent max-width="500">
@@ -126,7 +132,7 @@
                 </v-card-title>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-row style="margin-right:200px">
+                  <v-row style="margin-right: 200px">
                     <v-btn
                       class="btn"
                       elevation="3"
@@ -145,7 +151,7 @@
                       rounded
                       large
                       color="#2d9646"
-                      @click="dialog = false"
+                      @click="addAppointment()"
                     >
                       ต้องการจอง
                     </v-btn>
@@ -190,6 +196,16 @@
 <script>
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
+import axios from "axios";
+const ValidateEmail = (value) => {
+  const ReduxEmail =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (value.match(ReduxEmail)) {
+    return true;
+  } else {
+    return false;
+  }
+};
 export default {
   setup() {
     return {
@@ -198,9 +214,10 @@ export default {
   },
   data() {
     return {
+      AppointmentData: [],
       Fullname: "",
       Email: "",
-      Time: "",
+      time: "",
       Description: "",
       SelectTime: [
         "8.00",
@@ -227,10 +244,33 @@ export default {
   validations() {
     return {
       Fullname: { required, minLength: minLength(6) },
-      Email: { required, minLength: minLength(3) },
+      Email: { required, minLength: minLength(3), ValidateEmail },
       Description: { required },
-      Time: { required },
+      time: { required },
     };
+  },
+  created(){
+    this.AppointmentData = this.$route.params.doctorname
+    console.log(this.$route.params.doctorname);
+  },
+  methods: {
+    addAppointment() {
+      axios
+        .post("http://localhost:3000/appointmentUser/appointment", {
+          fullname: this.Fullname,
+          email: this.Email,
+          date: this.date,
+          time: this.time,
+          description: this.Description,
+          doctorname: this.AppointmentData
+        })
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
 };
 </script>
