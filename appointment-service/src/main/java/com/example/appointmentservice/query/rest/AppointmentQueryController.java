@@ -4,6 +4,7 @@ import com.example.appointmentservice.query.FindAppointmentQuery;
 import com.example.appointmentservice.query.FindAppointmentByDoctorName;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,14 +14,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/appointmentUser/")
 public class AppointmentQueryController {
+
+    @Autowired
+    RabbitTemplate rabbitTemplate;
     @Autowired
     QueryGateway queryGateway;
 
     @GetMapping
     public List<AppointmentRestModel> getAppointment(){
-        FindAppointmentQuery findAppointmentQuery = new FindAppointmentQuery();
-        List<AppointmentRestModel> appointmentUser = queryGateway.query(findAppointmentQuery, ResponseTypes.multipleInstancesOf(AppointmentRestModel.class)).join();
-        return appointmentUser;
+        Object users = rabbitTemplate.convertSendAndReceive("AppointmentExchange", "getAllAppointment", "");
+        return (List<AppointmentRestModel>) users;
     }
 
     @GetMapping(value = "/{doctorname}")
