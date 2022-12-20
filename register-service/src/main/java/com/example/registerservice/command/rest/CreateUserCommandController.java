@@ -1,9 +1,9 @@
 package com.example.registerservice.command.rest;
 
 
-
 import com.example.registerservice.command.CreateUserCommand;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,11 +13,15 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/user")
 public class CreateUserCommandController {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
     private final CommandGateway commandGateway;
     @Autowired
     public CreateUserCommandController(CommandGateway commandGateway){
         this.commandGateway = commandGateway;
     }
+
     @PostMapping("/register")
     public String createUser(@RequestBody CreateUserRestModel model){
         CreateUserCommand command = CreateUserCommand.builder()
@@ -28,14 +32,7 @@ public class CreateUserCommandController {
                 .email(model.getEmail())
                 .gender(model.getGender())
                 .role(model.getRole()).build();
-
-        String result;
-        try{
-            result = commandGateway.sendAndWait(command);
-        }catch (Exception e){
-            e.printStackTrace();
-            result = e.getLocalizedMessage();
-        }
-        return result;
+        Object users = rabbitTemplate.convertSendAndReceive("RegisterExchange", "createUser", command);
+        return (String) users;
     }
 }

@@ -4,9 +4,11 @@ import lombok.Builder;
 import lombok.Data;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
+import java.io.Serializable;
+
 @Builder
 @Data
-public class UpdateUserCommand {
+public class UpdateUserCommand implements Serializable {
     @TargetAggregateIdentifier
     private String id;
     private String name;

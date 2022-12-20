@@ -6,6 +6,8 @@ import com.example.userservice2.query.FindUserByIdQuery;
 import com.example.userservice2.query.FindUsersQuery;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserQueryController {
+
+    @Autowired
+    RabbitTemplate rabbitTemplate;
+
     @Autowired
     QueryGateway queryGateway;
 
@@ -28,9 +34,8 @@ public class UserQueryController {
 
     @GetMapping(value = "/{id}")
     public UserRestModel getUserById(@PathVariable String id){
-        FindUserByIdQuery findUserByIdQuery = new FindUserByIdQuery(id);
-        UserRestModel infoUserById = queryGateway.query(findUserByIdQuery, ResponseTypes.instanceOf(UserRestModel.class)).join();
-        return infoUserById;
+        Object users = rabbitTemplate.convertSendAndReceive("LoginExchange", "getUserById", id);
+        return (UserRestModel) users;
     }
 
     @GetMapping(value = "/{username}/{password}")

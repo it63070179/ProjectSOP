@@ -8,7 +8,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Data
-@Document("user")
+@Document("Users")
 public class UserEntity implements Serializable {
 
     @Serial

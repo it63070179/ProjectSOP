@@ -5,12 +5,19 @@ import com.example.userservice2.command.AddDoctorCommand;
 import com.example.userservice2.command.UpdateDoctorCommand;
 import com.example.userservice2.command.UpdateUserCommand;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@CrossOrigin(value = "http://localhost:8080", allowCredentials = "true")
 @RestController
 @RequestMapping("/users")
 public class UserCommandController {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
     private final CommandGateway commandGateway;
 
     @Autowired
@@ -29,19 +36,8 @@ public class UserCommandController {
                 .gender(model.getGender())
 //                .role(model.getRole())
                 .build();
-        System.out.println("Command : " + command);
-        System.out.println("ID :  "+ model.getId());
-        System.out.println("Name : " + model.getName());
-        System.out.println("Gender : " + model.getGender());
-        String result;
-        try{
-            result = commandGateway.sendAndWait(command);
-        }
-        catch (Exception e){
-            result = e.getLocalizedMessage();
-        }
-        System.out.println("result : " + result);
-        return result;
+        Object users = rabbitTemplate.convertSendAndReceive("UserExchange", "updateUser", command);
+        return (String) users;
     }
 
     @PutMapping("/adddoctor")
@@ -51,19 +47,17 @@ public class UserCommandController {
                 .email(model.getEmail())
                 .role(model.getRole())
                 .build();
-        System.out.println("Command : " + command);
-//        System.out.println("ID :  "+ model.getId());
-        System.out.println("Email : " + model.getEmail());
-        System.out.println("Role : " + model.getRole());
-        String result;
-        try{
-            result = commandGateway.sendAndWait(command);
-        }
-        catch (Exception e){
-            result = e.getLocalizedMessage();
-        }
-        System.out.println("result : " + result);
-        return result;
+        Object users = rabbitTemplate.convertSendAndReceive("UserExchange", "addDoctor", command);
+        return (String) users;
+//        String result;
+//        try{
+//            result = commandGateway.sendAndWait(command);
+//        }
+//        catch (Exception e){
+//            result = e.getLocalizedMessage();
+//        }
+//        System.out.println("result : " + result);
+//        return result;
     }
 
     @PutMapping("/addadmin")
