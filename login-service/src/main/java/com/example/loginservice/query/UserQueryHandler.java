@@ -1,7 +1,7 @@
 package com.example.loginservice.query;
 
-import com.example.loginservice.data.UserRepository;
 import com.example.loginservice.core.UserEntity;
+import com.example.loginservice.data.UserRepository;
 import com.example.loginservice.query.rest.UserRestModel;
 import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.beans.BeanUtils;
@@ -39,4 +39,3 @@ public class UserQueryHandler {
         return userRest;
     }
 }
-

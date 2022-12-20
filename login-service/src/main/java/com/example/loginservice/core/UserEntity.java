@@ -7,12 +7,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.io.Serial;
 import java.io.Serializable;
 
-@Document("Users")
 @Data
+@Document("Users")
 public class UserEntity implements Serializable {
-
     @Serial
-    private static final long serialVersionUID = 3106264412778629176L;
+    private static final long serialVersionUID = -6814047517846880213L;
 
     @Id
     private String id;
