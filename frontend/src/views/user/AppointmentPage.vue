@@ -111,54 +111,65 @@
               ></v-select>
             </v-col>
 
-            <v-dialog v-model="dialog" persistent max-width="500">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  style="margin-left: 30px"
-                  class="btn"
-                  v-bind="attrs"
-                  v-on="on"
-                  elevation="3"
-                  rounded
-                  x-large
-                  :disabled="!isFormValid"
-                  color="#8539E6"
-                  >ยืนยันการจอง</v-btn
-                >
-              </template>
-              <v-card>
-                <v-card-title class="text-h5" style="justify-content: center">
-                  ต้องการจองหมอคนนี้?
-                </v-card-title>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-row style="margin-right: 200px">
-                    <v-btn
-                      class="btn"
-                      elevation="3"
-                      rounded
-                      large
-                      color="#E63946"
-                      @click="dialog = false"
-                    >
-                      ไม่จอง
-                    </v-btn>
-                  </v-row>
-                  <v-col>
-                    <v-btn
-                      class="btn"
-                      elevation="3"
-                      rounded
-                      large
-                      color="#2d9646"
-                      @click="addAppointment()"
-                    >
-                      ต้องการจอง
-                    </v-btn>
-                  </v-col>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+            <v-col style="margin-left: 200px">
+              <router-link to="/">
+                <v-btn class="btn" elevation="3" rounded large color="#E63946">
+                  ไม่จอง
+                </v-btn>
+              </router-link>
+            </v-col>
+
+            <v-col style="margin-right: 20px">
+              <v-dialog v-model="dialog" persistent max-width="500">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    style="margin-left: 30px"
+                    class="btn"
+                    :disabled="!isFormValid"
+                    v-bind="attrs"
+                    v-on="on"
+                    elevation="3"
+                    rounded
+                    x-large
+                    color="#8539E6"
+                    >ยืนยันการจอง</v-btn
+                  >
+                </template>
+                <v-card>
+                  <v-card-title class="text-h5" style="justify-content: center">
+                    ต้องการจองหมอคนนี้?
+                  </v-card-title>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-col style="margin-left: 200px">
+                        <v-btn
+                          class="btn"
+                          elevation="3"
+                          rounded
+                          large
+                          color="#E63946"
+                          @click="dialog = false"
+                        >
+                          แก้ไขข้อมูล
+                        </v-btn>
+                    </v-col>
+
+                    <v-col>
+                      <v-btn
+                        class="btn"
+                        elevation="3"
+                        rounded
+                        large
+                        color="#2d9646"
+                        @click="addAppointment()"
+                      >
+                        ต้องการจอง
+                      </v-btn>
+                    </v-col>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-col>
           </v-row>
         </v-form>
       </v-container>
@@ -249,8 +260,8 @@ export default {
       time: { required },
     };
   },
-  created(){
-    this.AppointmentData = this.$route.params.doctorname
+  created() {
+    this.AppointmentData = this.$route.params.doctorname;
     console.log(this.$route.params.doctorname);
   },
   methods: {
@@ -262,7 +273,7 @@ export default {
           date: this.date,
           time: this.time,
           description: this.Description,
-          doctorname: this.AppointmentData
+          doctorname: this.AppointmentData,
         })
         .then((response) => {
           console.log(response.data);
