@@ -33,7 +33,7 @@
                 >
               </v-card>
             </template>
-            <v-card >
+            <v-card>
               <v-img :src="doctors.image"></v-img>
               <v-card-text
                 style="
@@ -68,7 +68,7 @@
                 >
                   ย้อนกลับ
                 </v-btn>
-                <router-link to="/AppointmentUser">
+
                 <v-btn
                   style="margin-left: 30px"
                   class="btn"
@@ -78,11 +78,10 @@
                   rounded
                   x-large
                   color="#8539E6"
-                  @click="Dialogs[doctors.doc_id] = false"
+                  @click="appointmentDoctor(doctors.name)"
                 >
                   จองหมอคนนี้
                 </v-btn>
-                </router-link>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -94,12 +93,10 @@
 <style>
 body {
   background-color: #a8dadc;
-  
 }
 .v-application--wrap {
   min-height: 0vh !important;
   background-color: #a8dadc;
-  
 }
 .titledoc {
   text-align: center;
@@ -110,6 +107,7 @@ body {
 </style>
 <script>
 import NavBar from "../components/NavBar";
+import axios from "axios";
 export default {
   components: {
     NavBar,
@@ -149,6 +147,28 @@ export default {
         },
       ],
     };
+  },
+  mounted() {
+    this.getAppointment();
+  },
+  methods: {
+    getAppointment() {
+      axios
+        .get(`http://localhost:3000/appointmentUser/`)
+        .then((response) => {
+          console.log(response.data);
+          this.users = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    appointmentDoctor(doctorname) {
+      this.$router.push({
+        name: "AppointmentUser",
+        params: { doctorname: doctorname },
+      });
+    },
   },
 };
 </script>
