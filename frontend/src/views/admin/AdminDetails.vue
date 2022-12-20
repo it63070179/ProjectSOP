@@ -48,6 +48,8 @@
   </template>
   
   <script>
+  import axios from 'axios';
+
     export default {
       name: 'admin-adminDetails',
       data() {
@@ -89,5 +91,21 @@
           ],
         }
       },
+      mounted(){
+        this.getUsers();
+      },
+      methods: {
+        getUsers(){
+          axios
+          .get(`http://localhost:3000/users`)
+          .then((response) => {
+            let filterData = response.data.filter(item => item.role == "admin");
+            this.admins = filterData;
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+        }
+      }
     }
   </script>

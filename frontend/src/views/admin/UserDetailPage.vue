@@ -40,6 +40,8 @@
             :headers="headers"
             :items="users"
             :search="search"
+            :sort-by="['role']"
+            :sort-desc="[false]"
           ></v-data-table>
         </v-card>
       </div>
@@ -48,6 +50,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
   export default {
     name: 'admin-userDetailPadge',
     data() {
@@ -93,5 +97,20 @@
         ],
       }
     },
+    mounted(){
+        this.getUsers();
+      },
+      methods: {
+        getUsers(){
+          axios
+          .get(`http://localhost:3000/users`)
+          .then((response) => {
+            this.users = response.data;
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+        }
+      }
   }
 </script>
