@@ -1,7 +1,6 @@
 package com.example.loginservice.query.rest;
 
-import com.example.loginservice.query.FindByUsernameAndPassword;
-import org.axonframework.messaging.responsetypes.ResponseTypes;
+import com.example.loginservice.query.RabbitLoginDataModel;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +21,17 @@ public class UserQueryController {
 
     @GetMapping
     public List<UserRestModel> getUser(){
-        Object users = rabbitTemplate.convertSendAndReceive("UserExchange", "getAllUser", "");
+        Object users = rabbitTemplate.convertSendAndReceive("LoginExchange", "getAllUser", "");
         return (List<UserRestModel>) users;
     }
 
     @GetMapping(value = "/{username}/{password}")
     public UserRestModel getUserByUsernameAndPassword(@PathVariable String username, @PathVariable String password){
-        FindByUsernameAndPassword findByUsernameAndPassword = new FindByUsernameAndPassword(username, password);
-        UserRestModel user = queryGateway
-                .query(findByUsernameAndPassword, ResponseTypes.instanceOf(UserRestModel.class)).join();
-        return user;
+        if(username == "" || password == ""){
+            return null;
+        }
+        RabbitLoginDataModel loginData = new RabbitLoginDataModel(username, password);
+        Object user = rabbitTemplate.convertSendAndReceive("LoginExchange", "getByUsernameAndPassword", loginData);
+        return (UserRestModel) user;
     }
 }
