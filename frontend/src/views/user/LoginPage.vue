@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <img src="../assets/Hospital.png" class="icon_img" />
+    <img src="../../assets/logo.png" class="icon_img" />
     <p class="text-body-1 labelOnTextField">Username</p>
     <v-text-field label="Username" solo v-model="v$.UserName.$model" />
     <template v-if="v$.UserName.$error">
@@ -34,6 +34,7 @@
       depressed
       color="#FB9C9C"
       style="margin-bottom: 50%; width: 40%; height: 8%"
+      @click="login()"
       >Login</v-btn
     >
   </div>
@@ -89,6 +90,7 @@
 <script>
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
+import axios from 'axios';
 
 export default {
   //   name: "login",
@@ -102,6 +104,35 @@ export default {
       UserName: "",
       Password: "",
     };
+  },
+  methods:{
+    login(){
+      axios
+        .get(`http://localhost:3000/users/`+this.UserName+"/"+this.Password)
+        .then((response) => {
+          console.log(response);
+          if(response.data != ""){
+            localStorage.setItem("userData", JSON.stringify(response.data));
+            if(response.data.role == "user"){
+              this.$router.push({
+                name: "HomePage",
+              });
+            }
+            else if(response.data.role == "admin"){
+              this.$router.push({
+                name: "UserDetailPage",
+              });
+            }
+          }
+          else{
+            alert("username or password is incorrect");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          alert("username or password is incorrect");
+        })
+    }
   },
   validations() {
     return {
