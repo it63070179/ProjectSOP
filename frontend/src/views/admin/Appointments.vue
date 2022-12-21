@@ -18,7 +18,7 @@
         </v-list>
   
         <template v-slot:append>
-          <div class="pa-2" @click="result = 'test'">
+          <div class="pa-2" @click="logout()">
             <v-btn block light>Logout</v-btn>
           </div>
         </template>
@@ -48,13 +48,14 @@
   </template>
   
   <script>
+import axios from 'axios'
     export default {
       name: 'admin-appointment',
       data() {
         return {
           result: '',
           items: [
-            { title: 'User Details', icon: 'mdi-account-circle', path: '/'},
+            { title: 'User Details', icon: 'mdi-account-circle', path: '/userDetails'},
             { title: 'Appointments', icon: 'mdi-calendar-clock', path: '/appointments' },
             { title: 'Dotor Details', icon: 'mdi-card-account-details', path: '/doctorDetails' },
             { title: 'Admin Details', icon: 'mdi-card-account-details-star', path: '/adminDetails' },
@@ -95,9 +96,27 @@
               description: 'stomachache',
               doctor: 'doctor2'
             },
-            
           ],
         }
       },
+      methods: {
+        getUsers(){
+          axios
+          .get(`http://localhost:3003/appointmentUser`)
+          .then((response) => {
+            let filterData = response.data.filter(item => item.role == "admin");
+            this.admins = filterData;
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+        },
+        logout(){
+          localStorage.removeItem('userData');
+          this.$router.push({
+            name: "LoginPage",
+          });
+        }
+      }
     }
   </script>
