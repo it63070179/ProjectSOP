@@ -12,7 +12,7 @@ import java.util.List;
 
 @CrossOrigin(value = "http://localhost:8080", allowCredentials = "true")
 @RestController
-@RequestMapping("/appointmentUser/")
+@RequestMapping("/appointmentUser")
 public class AppointmentQueryController {
 
     @Autowired

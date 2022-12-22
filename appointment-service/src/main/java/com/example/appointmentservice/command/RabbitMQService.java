@@ -4,10 +4,11 @@ import com.example.appointmentservice.command.rest.CreateAppointmentRestModel;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Service
 public class RabbitMQService {
     @Autowired
     CommandGateway commandGateway;
@@ -23,6 +24,7 @@ public class RabbitMQService {
             e.printStackTrace();
             result = e.getLocalizedMessage();
         }
+        System.out.println("result : " + result);
         return result;
     }
 }
