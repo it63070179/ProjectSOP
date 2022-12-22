@@ -52,7 +52,7 @@
   </div>
 </template>
 <script>
-// import axios from "axios";
+import axios from "axios";
 export default {
   name: "doctor-appointment",
   data() {
@@ -69,12 +69,11 @@ export default {
       search: "",
       headers: [
         {
-          text: "ID",
+          text: "Full Name",
           align: "start",
           filterable: false,
-          value: "id",
+          value: "fullname",
         },
-        { text: "Full Name", value: "fullName" },
         { text: "Email", value: "email" },
         { text: "Date", value: "date" },
         { text: "Time", value: "time" },
@@ -104,6 +103,16 @@ export default {
   mounted() {
     const data = JSON.parse(localStorage.getItem("userData"));
     console.log("data: ", data);
+
+    axios
+      .get("http://localhost:3003/appointmentUser/" + data.name)
+      .then((response) => {
+        // console.log(response.data);
+        this.appointments = response.data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
 
   methods: {
