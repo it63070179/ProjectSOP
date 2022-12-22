@@ -8,4 +8,7 @@ public class DoctorUpdateEvent {
     private String name;
     private String branch;
     private String description;
+    private String email;
+    private String picture;
+    private String gender;
 }

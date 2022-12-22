@@ -26,6 +26,7 @@ public class UserAggregate {
     private String branch;
     private String description;
     private String role;
+    private String picture;
 
     public UserAggregate(){
     }
@@ -45,6 +46,7 @@ public class UserAggregate {
         this.name = event.getName();
 //        this.username = event.getUsername();
 //        this.password = event.getPassword();
+        this.picture = event.getPicture();
         this.email = event.getEmail();
         this.gender = event.getGender();
 //        this.role = event.getRole();
@@ -109,6 +111,9 @@ public class UserAggregate {
     public void on(DoctorUpdateEvent event){
         this.id = event.getId();
         this.name = event.getName();
+        this.email = event.getEmail();
+        this.picture = event.getPicture();
+        this.gender = event.getGender();
 //        this.username = event.getUsername();
 //        this.password = event.getPassword();
         this.branch = event.getBranch();

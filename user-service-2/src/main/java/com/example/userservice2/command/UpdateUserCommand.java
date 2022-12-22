@@ -16,5 +16,6 @@ public class UpdateUserCommand implements Serializable {
 //    private String password;
     private String email;
     private String gender;
+    private String picture;
 //    private String role;
 }

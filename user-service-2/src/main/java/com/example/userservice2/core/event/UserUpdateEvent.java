@@ -10,5 +10,6 @@ public class UserUpdateEvent {
 //    private String password;
     private String email;
     private String gender;
+    private String picture;
 //    private String role;
 }

@@ -14,4 +14,7 @@ public class UpdateDoctorCommand implements Serializable {
     private String name;
     private String branch;
     private String description;
+    private String email;
+    private String picture;
+    private String gender;
 }

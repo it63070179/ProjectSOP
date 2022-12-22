@@ -8,8 +8,13 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @CrossOrigin(value = "http://localhost:8080", allowCredentials = "true")
 @RestController
@@ -26,19 +31,21 @@ public class UserCommandController {
     }
 
     @PutMapping("/update")
-    public String updateUser(@RequestBody UpdateUserRestModel model){
-        UpdateUserCommand command = UpdateUserCommand.builder()
-                .id(model.getId())
-                .name(model.getName())
-//                .username(model.getUsername())
-//                .password(model.getPassword())
-                .email(model.getEmail())
-                .gender(model.getGender())
-//                .role(model.getRole())
-                .build();
+    public String updateUser(@RequestParam("id") String id,@RequestParam("name") String name,
+                             @RequestParam("email") String email, @RequestParam("gender") String gender,
+                             @RequestParam("file") MultipartFile file) throws IOException{
+        UpdateUserCommand command = UpdateUserCommand.builder().id(id).name(name).email(email).gender(gender).picture(file.getOriginalFilename()).build();
+        File saveFile = new File("C:\\Users\\user\\OneDrive\\เดสก์ท็อป\\ProjectSOP\\ProjectSOP\\user-service-2\\src\\main\\resources\\static", file.getOriginalFilename());
+        saveFile.createNewFile();
+        try(FileOutputStream fout = new FileOutputStream(saveFile)){
+            fout.write(file.getBytes());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         Object users = rabbitTemplate.convertSendAndReceive("UserExchange", "updateUser", command);
         return (String) users;
     }
+
 
     @PutMapping("/adddoctor")
     public String addDoctor(@RequestBody AddDoctorRestModel model){
@@ -49,15 +56,6 @@ public class UserCommandController {
                 .build();
         Object users = rabbitTemplate.convertSendAndReceive("UserExchange", "addDoctor", command);
         return (String) users;
-//        String result;
-//        try{
-//            result = commandGateway.sendAndWait(command);
-//        }
-//        catch (Exception e){
-//            result = e.getLocalizedMessage();
-//        }
-//        System.out.println("result : " + result);
-//        return result;
     }
 
     @PutMapping("/addadmin")
@@ -83,18 +81,17 @@ public class UserCommandController {
     }
 
     @PutMapping("/update/doctor")
-    public String updateDoctor(@RequestBody UpdateDoctorRestModel model){
-        UpdateDoctorCommand command = UpdateDoctorCommand.builder()
-                .id(model.getId())
-                .name(model.getName())
-                .branch(model.getBranch())
-                .description(model.getDescription())
-                .build();
-        System.out.println("Command : " + command);
-        System.out.println("ID :  "+ model.getId());
-        System.out.println("Name : " + model.getName());
-        System.out.println("Branch : " + model.getBranch());
-        System.out.println("Description : " + model.getDescription());
+    public String updateDoctor(@RequestParam("id") String id,@RequestParam("name") String name,
+                               @RequestParam("email") String email, @RequestParam("gender") String gender,
+                               @RequestParam("file") MultipartFile file,@RequestParam("branch") String branch,@RequestParam("description") String description) throws IOException{
+        UpdateDoctorCommand command = UpdateDoctorCommand.builder().id(id).name(name).email(email).gender(gender).picture(file.getOriginalFilename()).branch(branch).description(description).build();
+        File saveFile = new File("C:\\Users\\user\\OneDrive\\เดสก์ท็อป\\ProjectSOP\\ProjectSOP\\user-service-2\\src\\main\\resources\\static", file.getOriginalFilename());
+        saveFile.createNewFile();
+        try(FileOutputStream fout = new FileOutputStream(saveFile)){
+            fout.write(file.getBytes());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         String result;
         try{
             result = commandGateway.sendAndWait(command);

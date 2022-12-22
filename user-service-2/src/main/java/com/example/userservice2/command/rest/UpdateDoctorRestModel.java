@@ -8,4 +8,5 @@ public class UpdateDoctorRestModel {
     private String name;
     private String branch;
     private String description;
+
 }

@@ -26,6 +26,7 @@ public class UserEventsHandler {
         userEntity.setName(event.getName());
         userEntity.setEmail(event.getEmail());
         userEntity.setGender(event.getGender());
+        userEntity.setPicture(event.getPicture());
         userRepository.save(userEntity);
     }
 
@@ -55,6 +56,9 @@ public class UserEventsHandler {
         userEntity.setName(event.getName());
         userEntity.setBranch(event.getBranch());
         userEntity.setDescription(event.getDescription());
+        userEntity.setPicture(event.getPicture());
+        userEntity.setGender(event.getGender());
+        userEntity.setEmail(event.getEmail());
         userRepository.save(userEntity);
     }
 }

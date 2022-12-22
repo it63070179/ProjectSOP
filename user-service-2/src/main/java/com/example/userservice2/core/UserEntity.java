@@ -23,4 +23,5 @@ public class UserEntity implements Serializable {
     private String branch;
     private String description;
     private String role;
+    private String picture;
 }
