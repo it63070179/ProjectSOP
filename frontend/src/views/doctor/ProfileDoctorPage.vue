@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <div>
     <v-app-bar class="flex-grow-0" app dark>
       <v-app-bar-title>Doctor Details</v-app-bar-title>
     </v-app-bar>
@@ -199,7 +199,7 @@
         <!-- </v-container> -->
       </div>
     </v-content>
-  </v-app>
+  </div>
 </template>
 <style>
 .imguser {
@@ -415,6 +415,12 @@ export default {
 
     logout() {
       localStorage.removeItem("userData");
+      const backgroundElement = document.getElementsByClassName(
+        "v-application--wrap"
+      );
+      backgroundElement[0].style.backgroundColor = "#a8dadc";
+      backgroundElement[0].style.justifyContent = "center";
+      backgroundElement[0].style.alignItems = "center";
       this.$router.push({
         name: "LoginPage",
       });
