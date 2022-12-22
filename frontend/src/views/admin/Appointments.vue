@@ -90,17 +90,16 @@ export default {
       search: "",
       headers: [
         {
-          text: "ID",
+          text: "Full Name",
           align: "start",
           filterable: false,
-          value: "id",
+          value: "fullname",
         },
-        { text: "Full Name", value: "fullName" },
         { text: "Email", value: "email" },
         { text: "Date", value: "date" },
         { text: "Time", value: "time" },
         { text: "Description", value: "description" },
-        { text: "Doctor", value: "doctor" },
+        { text: "Doctor", value: "doctorname" },
       ],
       appointments: [
         {
@@ -124,13 +123,17 @@ export default {
       ],
     };
   },
+
+  mounted() {
+    this.getUsers();
+  },
   methods: {
     getUsers() {
       axios
-        .get(`http://localhost:3003/appointmentUser`)
+        .get(`http://localhost:3003/appointmentUser/`)
         .then((response) => {
-          let filterData = response.data.filter((item) => item.role == "admin");
-          this.admins = filterData;
+          this.appointments = response.data;
+          console.log(response.data);
         })
         .catch((error) => {
           console.log(error);
