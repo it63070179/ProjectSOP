@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <img src="../../assets/logo.png" class="icon_img" />
+    <img src="../assets/Hospital.png" class="icon_img" />
     <p class="text-body-1 labelOnTextField">Username</p>
     <v-text-field label="Username" solo v-model="v$.UserName.$model" />
     <template v-if="v$.UserName.$error">
@@ -45,44 +45,35 @@
   justify-content: center;
   align-items: center;
 }
-
 .icon_img {
   width: 40%;
   margin-bottom: -2%;
 }
-
 .v-application p {
   margin-bottom: 10px;
 }
-
 .v-text-field {
   margin-top: 0;
 }
-
 .v-text-field.v-text-field--enclosed {
   width: 70%;
   margin-left: 20%;
 }
-
 .v-input__slot {
   margin-bottom: 0;
 }
-
 .login {
   background-color: #fff;
   width: 30%;
   text-align: center;
 }
-
 .labelOnTextField {
   position: relative;
   right: 20%;
 }
-
 .theme--light.v-btn {
   color: #fff;
 }
-
 .v-btn__content {
   font-size: 1.2rem;
 }
@@ -90,8 +81,7 @@
 <script>
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
-import axios from 'axios';
-
+import axios from "axios";
 export default {
   //   name: "login",
   setup() {
@@ -105,34 +95,38 @@ export default {
       Password: "",
     };
   },
-  methods:{
-    login(){
+  methods: {
+    login() {
       axios
-        .get(`http://localhost:3000/users/`+this.UserName+"/"+this.Password)
+        .get(
+          `http://localhost:3000/users/` + this.UserName + "/" + this.Password
+        )
         .then((response) => {
           console.log(response);
-          if(response.data != ""){
+          if (response.data != "") {
             localStorage.setItem("userData", JSON.stringify(response.data));
-            if(response.data.role == "user"){
+            if (response.data.role == "user") {
               this.$router.push({
                 name: "HomePage",
               });
-            }
-            else if(response.data.role == "admin"){
+            } else if (response.data.role == "admin") {
               this.$router.push({
                 name: "UserDetailPage",
               });
+            } else if (response.data.role == "doctor") {
+              this.$router.push({
+                name: "doctor-appointment",
+              });
             }
-          }
-          else{
+          } else {
             alert("username or password is incorrect");
           }
         })
         .catch((error) => {
           console.log(error);
           alert("username or password is incorrect");
-        })
-    }
+        });
+    },
   },
   validations() {
     return {
