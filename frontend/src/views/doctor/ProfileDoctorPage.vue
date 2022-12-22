@@ -33,7 +33,7 @@
       <div style="text-align: center">
         <!-- <v-container> -->
           <v-img
-          v-if="pic_show != ''"
+          v-if="pic_show != null"
           class="imguser"
           :src="'http://localhost:3002/' + pic_show"
         ></v-img>
@@ -46,7 +46,7 @@
           class="file-input"
           type="file"
           name="resume"
-          accept="image/png, image/jpeg, image/webp, image/jpg "
+          accept="image/png, image/jpeg, image/webp, image/jpg"
           style="margin-top: 3%; margin-bottom: 3%"
           @change="selectImages"
         />
@@ -229,12 +229,12 @@
 </template>
 <style>
 .imguser {
-  left: 35%;
+  left: 40%;
   border-radius: 100%;
   background-repeat: no-repeat;
   background-size: contain;
-  width: 30%;
-  height: 30%;
+  width: 300px;
+  height: 300px;
   margin-top: 5%;
 }
 
@@ -290,11 +290,11 @@ export default {
         },
       ],
       id: "",
-      fullname: "BANK LEK",
-      email: "EmailnaJa@email.com",
-      branch: "asdasdasdsa",
-      description: "asdasdasdasdsadsadasd",
-      gender: "Male",
+      fullname: "",
+      email: "",
+      branch: "",
+      description: "",
+      gender: "",
       editFullname: "",
       editEmail: "",
       pic:'',
