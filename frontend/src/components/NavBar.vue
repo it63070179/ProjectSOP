@@ -34,9 +34,9 @@
   color: white !important;
   align-self: center;
 }
-.v-application--wrap {
+/* .v-application--wrap {
   min-height: 0vh !important;
-}
+} */
 </style>
 <script>
 export default {
