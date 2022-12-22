@@ -92,13 +92,7 @@ export default {
       ],
       search: "",
       headers: [
-        {
-          text: "ID",
-          align: "start",
-          filterable: false,
-          value: "id",
-        },
-        { text: "Name", value: "name" },
+        { text: "Name", align: "start", filterable: false, value: "name" },
         { text: "Email", value: "email" },
         { text: "Gender", value: "gender" },
         { text: "Role", value: "role" },
