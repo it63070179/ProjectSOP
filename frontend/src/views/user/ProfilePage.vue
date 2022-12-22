@@ -170,8 +170,8 @@
   border-radius: 100%;
   background-repeat: no-repeat;
   background-size: contain;
-  width: 50%;
-  height: 50%;
+  width: 300px;
+  height: 300px;
   margin-left: 15%;
   margin-bottom: 10%;
 }
@@ -221,9 +221,9 @@ export default {
   data() {
     return {
       id: "",
-      fullname: "BANK LEK",
-      email: "EmailnaJa@email.com",
-      gender: "Male",
+      fullname: "",
+      email: "",
+      gender: "",
       editFullname: "",
       editEmail: "",
       editGender: "",
