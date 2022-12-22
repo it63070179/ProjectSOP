@@ -1,19 +1,25 @@
 <template>
-  <div>
-    <v-container>
-      <v-row>
-        <v-col
-          ><h1 class="white--text text-h3" style="margin-bottom: 3%">
-            Profile
-          </h1></v-col
-        >
-      </v-row>
-      <v-row no-gutters>
-        <v-col cols="5">
-          <v-img class="imguser" src="../assets/logo.png"></v-img>
-          <span class="text-h4 mb-8" v-if="!editToggleFullname">
-            {{ fullname }}</span
+  <div style="min-height: 100vh">
+    <NavBar />
+    <!-- <v-container> -->
+    <v-row class="ma-auto">
+      <v-col
+        ><h1 class="white--text text-h3" style="margin-bottom: 3%; padding-left: 5%">
+          Profile
+        </h1></v-col
+      >
+    </v-row>
+    <v-row no-gutters class="ma-auto">
+      <v-col cols="5" class="pa-5">
+        <v-img class="imguser" src="../assets/logo.png"></v-img>
+        <div style="position: relative; left: 10%">
+          <p
+            class="text-h4"
+            style="display: inline-block; overflow-wrap: break-word"
+            v-if="!editToggleFullname"
           >
+            {{ fullname }}
+          </p>
           <v-text-field solo v-model="editFullname" v-else></v-text-field>
           <v-img
             contain
@@ -35,8 +41,16 @@
               Cancle
             </v-btn>
           </template>
-          <br />
-          <span class="text-h4 mb-8" v-if="!editToggleEmail">{{ email }}</span>
+        </div>
+        <br />
+        <div style="position: relative; left: 10%">
+          <p
+            class="text-h4"
+            style="display: inline-block; overflow-wrap: break-word"
+            v-if="!editToggleEmail"
+          >
+            {{ email }}
+          </p>
           <v-text-field solo v-model="editEmail" v-else></v-text-field>
           <v-img
             contain
@@ -58,10 +72,16 @@
               Cancle
             </v-btn>
           </template>
-          <br />
-          <span class="text-h4 mb-8" v-if="!editToggleGender">{{
-            gender
-          }}</span>
+        </div>
+        <br />
+        <div style="position: relative; left: 10%">
+          <p
+            class="text-h4"
+            style="display: inline-block; overflow-wrap: break-word"
+            v-if="!editToggleGender"
+          >
+            {{ gender }}
+          </p>
           <v-select
             solo
             :items="GenderForSelect"
@@ -87,28 +107,29 @@
             <v-btn depressed color="error" @click="editToggleGender = false">
               Cancle
             </v-btn>
-          </template></v-col
-        >
-        <v-col cols="7">
-          <v-content>
-            <div class="p-5">
-              <v-card>
-                <v-card-title>
-                  <v-text-field
-                    append-icon="mdi-magnify"
-                    label="Search"
-                    single-line
-                    hide-details
-                  ></v-text-field>
-                </v-card-title>
-                <v-data-table
-                  :headers="headers"
-                  :items="admins"
-                  :search="search"
-                ></v-data-table>
-              </v-card></div></v-content></v-col
-      ></v-row>
-    </v-container>
+          </template>
+        </div></v-col
+      >
+      <v-col cols="7" class="pa-5">
+        <v-content>
+          <div class="p-5">
+            <v-card>
+              <v-card-title>
+                <v-text-field
+                  append-icon="mdi-magnify"
+                  label="Search"
+                  single-line
+                  hide-details
+                ></v-text-field>
+              </v-card-title>
+              <v-data-table
+                :headers="headers"
+                :items="admins"
+                :search="search"
+              ></v-data-table>
+            </v-card></div></v-content></v-col
+    ></v-row>
+    <!-- </v-container> -->
   </div>
 </template>
 <style>
@@ -117,23 +138,23 @@
 }
 
 .imguser {
-  right: 20%;
   border-radius: 100%;
   background-repeat: no-repeat;
   background-size: contain;
+  width: 50%;
 }
 
 .imgicon {
-  width: 16%;
+  width: 12%;
   display: inline-block;
-  position: relative;
-  top: 3%;
+  position: absolute;
+  bottom: -10%;
   cursor: pointer;
 }
 
 .v-text-field.v-text-field--enclosed {
-  width: 50%;
-  margin-top: 10%;
+  width: 40%;
+  /* margin-top: 10%; */
 }
 
 .v-input {
@@ -149,10 +170,16 @@
 }
 </style>
 <script>
+import axios from "axios";
+import NavBar from "../components/NavBar";
 export default {
   //   name: "login",
+  components: {
+    NavBar,
+  },
   data() {
     return {
+      id: "",
       fullname: "BANK LEK",
       email: "EmailnaJa@email.com",
       gender: "Male",
@@ -244,6 +271,24 @@ export default {
       ],
     };
   },
+
+  mounted() {
+    const data = JSON.parse(localStorage.getItem("userData"));
+    // console.log("data: ", data);
+    axios
+      .get("http://localhost:3000/users/" + data.username + "/" + data.password)
+      .then((response) => {
+        console.log(response.data);
+        this.id = response.data.id;
+        this.fullname = response.data.name;
+        this.email = response.data.email;
+        this.gender = response.data.gender;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
+
   methods: {
     clickToEditFullname() {
       this.editToggleFullname = true;
@@ -253,6 +298,19 @@ export default {
     updateFullname() {
       this.editToggleFullname = false;
       this.fullname = this.editFullname;
+      axios
+        .put("http://localhost:3002/users/update", {
+          id: this.id,
+          name: this.fullname,
+          email: this.email,
+          gender: this.gender,
+        })
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       this.editFullname = "";
     },
 
@@ -264,6 +322,19 @@ export default {
     updateEmail() {
       this.editToggleEmail = false;
       this.email = this.editEmail;
+      axios
+        .put("http://localhost:3002/users/update", {
+          id: this.id,
+          name: this.fullname,
+          email: this.email,
+          gender: this.gender,
+        })
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       this.editEmail = "";
     },
 
@@ -275,6 +346,19 @@ export default {
     updateGender() {
       this.editToggleGender = false;
       this.gender = this.editGender;
+      axios
+        .put("http://localhost:3002/users/update", {
+          id: this.id,
+          name: this.fullname,
+          email: this.email,
+          gender: this.gender,
+        })
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       this.editGender = "";
     },
   },
