@@ -4,9 +4,14 @@
       <v-app-bar-title>Appointments</v-app-bar-title>
     </v-app-bar>
     <v-navigation-drawer app dark>
-      <v-divider style="margin-top:25%"></v-divider>
+      <v-divider style="margin-top: 25%"></v-divider>
       <v-list dense nav>
-        <v-list-item v-for="item in items" :to="item.path" :key="item.title" link>
+        <v-list-item
+          v-for="item in items"
+          :to="item.path"
+          :key="item.title"
+          link
+        >
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
@@ -48,49 +53,58 @@
 </template>
 
 <script>
-  export default {
-    name: 'doctor-appointment',
-    data() {
-      return {
-        result: '',
-        items: [
-          { title: 'Appointments', icon: 'mdi-calendar-clock', path: '/'},
-          { title: 'Update Information', icon: 'mdi-card-account-details', path: '/updateinfo' },
-        ],
-        search: '',
-        headers: [
-          {
-            text: 'ID',
-            align: 'start',
-            filterable: false,
-            value: 'id',
-          },
-          { text: 'Full Name', value: 'fullName' },
-          { text: 'Email', value: 'email' },
-          { text: 'Date', value: 'date' },
-          { text: 'Time', value: 'time' },
-          { text: 'Description', value: 'description' },
-        ],
-        appointments: [
-          {
-            id: 1,
-            fullName: 'User1 Lastname',
-            email: 'user1@gmail.com',
-            date: '15/12/2022',
-            time: '12.00',
-            description: 'headache',
-          },
-          {
-            id: 2,
-            fullName: 'User2 Lastname',
-            email: 'user2@gmail.com',
-            date: '15/12/2022',
-            time: '13.00',
-            description: 'stomachache',
-          },
-          
-        ],
-      }
-    },
-  }
+// import axios from "axios";
+export default {
+  name: "doctor-appointment",
+  data() {
+    return {
+      result: "",
+      items: [
+        { title: "Appointments", icon: "mdi-calendar-clock", path: "/doctor" },
+        {
+          title: "Update Information",
+          icon: "mdi-card-account-details",
+          path: "/profiledoctor",
+        },
+      ],
+      search: "",
+      headers: [
+        {
+          text: "ID",
+          align: "start",
+          filterable: false,
+          value: "id",
+        },
+        { text: "Full Name", value: "fullName" },
+        { text: "Email", value: "email" },
+        { text: "Date", value: "date" },
+        { text: "Time", value: "time" },
+        { text: "Description", value: "description" },
+      ],
+      appointments: [
+        {
+          id: 1,
+          fullName: "User1 Lastname",
+          email: "user1@gmail.com",
+          date: "15/12/2022",
+          time: "12.00",
+          description: "headache",
+        },
+        {
+          id: 2,
+          fullName: "User2 Lastname",
+          email: "user2@gmail.com",
+          date: "15/12/2022",
+          time: "13.00",
+          description: "stomachache",
+        },
+      ],
+    };
+  },
+
+  mounted() {
+    const data = JSON.parse(localStorage.getItem("userData"));
+    console.log("data: ", data);
+  },
+};
 </script>
