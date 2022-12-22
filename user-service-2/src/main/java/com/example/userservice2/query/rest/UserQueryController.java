@@ -34,7 +34,7 @@ public class UserQueryController {
 
     @GetMapping(value = "/{id}")
     public UserRestModel getUserById(@PathVariable String id){
-        Object users = rabbitTemplate.convertSendAndReceive("LoginExchange", "getUserById", id);
+        Object users = rabbitTemplate.convertSendAndReceive("UserExchange", "getUserById", id);
         return (UserRestModel) users;
     }
 
