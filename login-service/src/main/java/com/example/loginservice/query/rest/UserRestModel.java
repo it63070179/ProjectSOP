@@ -13,5 +13,8 @@ public class UserRestModel implements Serializable {
     private String password;
     private String email;
     private String gender;
+    private String branch;
+    private String description;
     private String role;
+    private String picture;
 }
