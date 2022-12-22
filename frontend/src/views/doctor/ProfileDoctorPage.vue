@@ -32,11 +32,37 @@
     <v-content>
       <div style="text-align: center">
         <!-- <v-container> -->
-        <v-img class="imguser" src="../assets/logo.png"></v-img>
-        <div style="position: relative">
+          <v-img
+          v-if="pic_show != ''"
+          class="imguser"
+          :src="'http://localhost:3002/' + pic_show"
+        ></v-img>
+        <v-img
+          v-if="pic_show == null"
+          class="imguser1"
+          src="../../assets/ProfileIcon.png"
+        ></v-img>
+        <input
+          class="file-input"
+          type="file"
+          name="resume"
+          accept="image/png, image/jpeg, image/webp, image/jpg "
+          style="margin-top: 3%; margin-bottom: 3%"
+          @change="selectImages"
+        />
+
+        <v-btn
+          depressed
+          color="success"
+          class="mr-3 ml-2"
+          @click="updatepicture"
+        >
+          Update
+        </v-btn>
+        <div style="position: relative; ">
           <p
             class="text-h4"
-            style="display: inline-flex; overflow-wrap: break-word"
+            style="display: inline-flex; overflow-wrap: break-word; "
             v-if="!editToggleFullname"
           >
             {{ fullname }}
@@ -44,7 +70,7 @@
           <v-text-field solo v-model="editFullname" v-else></v-text-field>
           <v-img
             contain
-            src="../assets/Edit.png"
+            src="../../assets/Edit.png"
             class="imgicon"
             v-if="!editToggleFullname"
             @click="clickToEditFullname"
@@ -75,7 +101,7 @@
           <v-text-field solo v-model="editEmail" v-else></v-text-field>
           <v-img
             contain
-            src="../assets/Edit.png"
+            src="../../assets/Edit.png"
             class="imgicon"
             v-if="!editToggleEmail"
             @click="clickToEditEmail"
@@ -111,7 +137,7 @@
           ></v-select>
           <v-img
             contain
-            src="../assets/Edit.png"
+            src="../../assets/Edit.png"
             class="imgicon"
             v-if="!editToggleGender"
             @click="clickToEditGender"
@@ -142,7 +168,7 @@
           <v-text-field solo v-model="editBranch" v-else></v-text-field>
           <v-img
             contain
-            src="../assets/Edit.png"
+            src="../../assets/Edit.png"
             class="imgicon"
             v-if="!editToggleBranch"
             @click="clickToEditBranch"
@@ -173,7 +199,7 @@
           <v-text-field solo v-model="editDescription" v-else></v-text-field>
           <v-img
             contain
-            src="../assets/Edit.png"
+            src="../../assets/Edit.png"
             class="imgicon"
             v-if="!editToggleDescription"
             @click="clickToEditDescription"
@@ -208,6 +234,17 @@
   background-repeat: no-repeat;
   background-size: contain;
   width: 30%;
+  height: 30%;
+  margin-top: 5%;
+}
+
+.imguser1 {
+  left: 35%;
+  border-radius: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 30%;
+  height: 30%;
 }
 
 .imgicon {
@@ -260,8 +297,10 @@ export default {
       gender: "Male",
       editFullname: "",
       editEmail: "",
+      pic:'',
       editGender: "",
       editBranch: "",
+      pic_show:'',
       editDescription: "",
       editToggleFullname: false,
       editToggleEmail: false,
@@ -274,15 +313,67 @@ export default {
 
   mounted() {
     const data = JSON.parse(localStorage.getItem("userData"));
-    console.log("data: ", data);
-    this.id = data.id;
-    this.fullname = data.name;
-    this.email = data.email;
-    this.branch = data.branch;
-    this.description = data.description;
+
+    axios
+      .get("http://localhost:3000/users/" + data.username + "/" + data.password)
+      .then((response) => {
+        console.log(response.data);
+        this.id = response.data.id;
+        this.fullname = response.data.name;
+        this.email = response.data.email;
+        this.gender = response.data.gender;
+        this.pic_show = response.data.picture;
+        this.pic = response.data.picture;
+        this.branch = response.data.branch;
+        this.description = response.data.description;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
   },
 
   methods: {
+    selectImages(event) {
+      this.pic = event.target.files[0];
+    },
+    updatepicture() {
+    
+      let formData = new FormData();
+      formData.append("file", this.pic);
+      formData.append("id", this.id);
+      formData.append("name", this.fullname);
+      formData.append("email", this.email);
+      formData.append("gender", this.gender);
+      formData.append("branch", this.branch);
+      formData.append("description", this.description);
+
+      axios
+        .put("http://localhost:3002/users/update/doctor", formData)
+        .then((response) => {
+          const data = JSON.parse(localStorage.getItem("userData"));
+          console.log(data)
+          axios
+            .get(
+              "http://localhost:3000/users/" +
+                data.username +
+                "/" +
+                data.password
+            )
+            .then((response) => {
+              console.log(response.data);
+              this.pic_show = response.data.picture;
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+          console.log(response.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
     clickToEditFullname() {
       this.editToggleFullname = true;
       this.editFullname = this.fullname;
@@ -290,16 +381,16 @@ export default {
 
     updateFullname() {
       this.editToggleFullname = false;
-      this.fullname = this.editFullname;
+      this.fullname = this.editFullname;let formData = new FormData();
+      formData.append("file", this.pic);
+      formData.append("id", this.id);
+      formData.append("name", this.fullname);
+      formData.append("email", this.email);
+      formData.append("gender", this.gender);
+      formData.append("branch", this.branch);
+      formData.append("description", this.description);
       axios
-        .put("http://localhost:3002/users/update/doctor", {
-          id: this.id,
-          name: this.fullname,
-          email: this.email,
-          gender: this.gender,
-          branch: this.branch,
-          description: this.description,
-        })
+        .put("http://localhost:3002/users/update/doctor", formData)
         .then((response) => {
           console.log(response.data);
         })
@@ -317,15 +408,16 @@ export default {
     updateEmail() {
       this.editToggleEmail = false;
       this.email = this.editEmail;
+      let formData = new FormData();
+      formData.append("file", this.pic);
+      formData.append("id", this.id);
+      formData.append("name", this.fullname);
+      formData.append("email", this.email);
+      formData.append("gender", this.gender);
+      formData.append("branch", this.branch);
+      formData.append("description", this.description);
       axios
-        .put("http://localhost:3002/users/update/doctor", {
-          id: this.id,
-          name: this.fullname,
-          email: this.email,
-          gender: this.gender,
-          branch: this.branch,
-          description: this.description,
-        })
+      .put("http://localhost:3002/users/update/doctor", formData)
         .then((response) => {
           console.log(response.data);
         })
@@ -343,15 +435,16 @@ export default {
     updateGender() {
       this.editToggleGender = false;
       this.gender = this.editGender;
+      let formData = new FormData();
+      formData.append("file", this.pic);
+      formData.append("id", this.id);
+      formData.append("name", this.fullname);
+      formData.append("email", this.email);
+      formData.append("gender", this.gender);
+      formData.append("branch", this.branch);
+      formData.append("description", this.description);
       axios
-        .put("http://localhost:3002/users/update/doctor", {
-          id: this.id,
-          name: this.fullname,
-          email: this.email,
-          gender: this.gender,
-          branch: this.branch,
-          description: this.description,
-        })
+      .put("http://localhost:3002/users/update/doctor", formData)
         .then((response) => {
           console.log(response.data);
         })
@@ -369,15 +462,16 @@ export default {
     updateBranch() {
       this.editToggleBranch = false;
       this.branch = this.editBranch;
+      let formData = new FormData();
+      formData.append("file", this.pic);
+      formData.append("id", this.id);
+      formData.append("name", this.fullname);
+      formData.append("email", this.email);
+      formData.append("gender", this.gender);
+      formData.append("branch", this.branch);
+      formData.append("description", this.description);
       axios
-        .put("http://localhost:3002/users/update/doctor", {
-          id: this.id,
-          name: this.fullname,
-          email: this.email,
-          gender: this.gender,
-          branch: this.branch,
-          description: this.description,
-        })
+      .put("http://localhost:3002/users/update/doctor", formData)
         .then((response) => {
           console.log(response.data);
         })
@@ -395,15 +489,16 @@ export default {
     updateDescription() {
       this.editToggleDescription = false;
       this.description = this.editDescription;
+      let formData = new FormData();
+      formData.append("file", this.pic);
+      formData.append("id", this.id);
+      formData.append("name", this.fullname);
+      formData.append("email", this.email);
+      formData.append("gender", this.gender);
+      formData.append("branch", this.branch);
+      formData.append("description", this.description);
       axios
-        .put("http://localhost:3002/users/update/doctor", {
-          id: this.id,
-          name: this.fullname,
-          email: this.email,
-          gender: this.gender,
-          branch: this.branch,
-          description: this.description,
-        })
+      .put("http://localhost:3002/users/update/doctor", formData)
         .then((response) => {
           console.log(response.data);
         })
