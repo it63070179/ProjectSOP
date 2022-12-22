@@ -9,13 +9,21 @@
         ></v-img>
       </router-link>
       <v-spacer></v-spacer>
-      <v-img
-        style="margin-right: 30px; align-self: center"
-        max-height="100"
-        max-width="70"
-        src="../assets/ProfileIcon.png"
-      ></v-img>
-      <v-btn class="btn" elevation="3" rounded large color="#E63946"
+      <router-link to="/profile">
+        <v-img
+          style="margin-right: 30px; align-self: center"
+          max-height="100"
+          max-width="70"
+          src="../assets/ProfileIcon.png"
+        ></v-img>
+      </router-link>
+      <v-btn
+        class="btn"
+        elevation="3"
+        rounded
+        large
+        color="#E63946"
+        @click="logout()"
         >logout</v-btn
       >
     </v-toolbar>
@@ -33,5 +41,13 @@
 <script>
 export default {
   name: "NavBar",
+  methods: {
+    logout() {
+      localStorage.removeItem("userData");
+      this.$router.push({
+        name: "LoginPage",
+      });
+    },
+  },
 };
 </script>
