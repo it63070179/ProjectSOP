@@ -23,7 +23,7 @@
       </v-list>
 
       <template v-slot:append>
-        <div class="pa-2" @click="result = 'test'">
+        <div class="pa-2" @click="logout()">
           <v-btn block light>Logout</v-btn>
         </div>
       </template>
@@ -44,7 +44,12 @@
                   dense
                 ></v-text-field>
               </v-col>
-              <v-btn color="primary" style="margin-top: 1.5%; margin-left: 5%">Add to doctor</v-btn>
+              <v-btn
+                color="primary"
+                style="margin-top: 1.5%; margin-left: 5%"
+                @click="addDoctor()"
+                >Add to doctor</v-btn
+              >
             </v-row>
           </v-card-title>
         </v-card>
@@ -54,6 +59,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "admin-addDoctor",
   data() {
@@ -95,6 +101,28 @@ export default {
         },
       },
     };
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem("userData");
+      this.$router.push({
+        name: "LoginPage",
+      });
+    },
+    addDoctor() {
+      axios
+        .put("http://localhost:3002/users/adddoctor", {
+          email: this.email,
+          role: "doctor",
+        })
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      this.email = "";
+    },
   },
 };
 </script>
