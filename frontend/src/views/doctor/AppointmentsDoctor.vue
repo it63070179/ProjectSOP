@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <div>
     <v-app-bar class="flex-grow-0" app dark>
       <v-app-bar-title>Appointments</v-app-bar-title>
     </v-app-bar>
@@ -23,7 +23,7 @@
       </v-list>
 
       <template v-slot:append>
-        <div class="pa-2" @click="result = 'test'">
+        <div class="pa-2" @click="logout()">
           <v-btn block light>Logout</v-btn>
         </div>
       </template>
@@ -49,9 +49,8 @@
         </v-card>
       </div>
     </v-content>
-  </v-app>
+  </div>
 </template>
-
 <script>
 // import axios from "axios";
 export default {
@@ -105,6 +104,21 @@ export default {
   mounted() {
     const data = JSON.parse(localStorage.getItem("userData"));
     console.log("data: ", data);
+  },
+
+  methods: {
+    logout() {
+      localStorage.removeItem("userData");
+      const backgroundElement = document.getElementsByClassName(
+        "v-application--wrap"
+      );
+      backgroundElement[0].style.backgroundColor = "#a8dadc";
+      backgroundElement[0].style.justifyContent = "center";
+      backgroundElement[0].style.alignItems = "center";
+      this.$router.push({
+        name: "LoginPage",
+      });
+    },
   },
 };
 </script>
