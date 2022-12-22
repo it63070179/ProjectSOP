@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <div>
     <v-app-bar class="flex-grow-0" app dark>
       <v-app-bar-title>Add Doctor</v-app-bar-title>
     </v-app-bar>
@@ -55,7 +55,7 @@
         </v-card>
       </div>
     </v-content>
-  </v-app>
+  </div>
 </template>
 
 <script>
@@ -66,7 +66,11 @@ export default {
     return {
       result: "",
       items: [
-        { title: "User Details", icon: "mdi-account-circle", path: "/" },
+        {
+          title: "User Details",
+          icon: "mdi-account-circle",
+          path: "/userDetails",
+        },
         {
           title: "Appointments",
           icon: "mdi-calendar-clock",
@@ -105,6 +109,12 @@ export default {
   methods: {
     logout() {
       localStorage.removeItem("userData");
+      const backgroundElement = document.getElementsByClassName(
+        "v-application--wrap"
+      );
+      backgroundElement[0].style.backgroundColor = "#a8dadc";
+      backgroundElement[0].style.justifyContent = "center";
+      backgroundElement[0].style.alignItems = "center";
       this.$router.push({
         name: "LoginPage",
       });
