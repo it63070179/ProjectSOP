@@ -4,14 +4,43 @@
     <!-- <v-container> -->
     <v-row class="ma-auto">
       <v-col
-        ><h1 class="white--text text-h3" style="margin-bottom: 3%; padding-left: 5%">
+        ><h1
+          class="white--text text-h3"
+          style="margin-bottom: 3%; padding-left: 5%"
+        >
           Profile
         </h1></v-col
       >
     </v-row>
     <v-row no-gutters class="ma-auto">
       <v-col cols="5" class="pa-5">
-        <v-img class="imguser" src="../assets/logo.png"></v-img>
+        <v-img
+          v-if="pic_show != ''"
+          class="imguser"
+          :src="'http://localhost:3002/' + pic_show"
+        ></v-img>
+        <v-img
+          v-if="pic_show == null"
+          class="imguser1"
+          src="../../assets/ProfileIcon.png"
+        ></v-img>
+        <input
+          class="file-input"
+          type="file"
+          name="resume"
+          accept="image/png, image/jpeg, image/webp, image/jpg "
+          @change="selectImages"
+          style="margin-bottom: 3%"
+        />
+
+        <v-btn
+          depressed
+          color="success"
+          class="mr-3 ml-2"
+          @click="updatepicture"
+        >
+          Update
+        </v-btn>
         <div style="position: relative; left: 10%">
           <p
             class="text-h4"
@@ -23,7 +52,7 @@
           <v-text-field solo v-model="editFullname" v-else></v-text-field>
           <v-img
             contain
-            src="../assets/Edit.png"
+            src="../../assets/Edit.png"
             class="imgicon"
             v-if="!editToggleFullname"
             @click="clickToEditFullname"
@@ -54,7 +83,7 @@
           <v-text-field solo v-model="editEmail" v-else></v-text-field>
           <v-img
             contain
-            src="../assets/Edit.png"
+            src="../../assets/Edit.png"
             class="imgicon"
             v-if="!editToggleEmail"
             @click="clickToEditEmail"
@@ -90,7 +119,7 @@
           ></v-select>
           <v-img
             contain
-            src="../assets/Edit.png"
+            src="../../assets/Edit.png"
             class="imgicon"
             v-if="!editToggleGender"
             @click="clickToEditGender"
@@ -142,6 +171,18 @@
   background-repeat: no-repeat;
   background-size: contain;
   width: 50%;
+  height: 50%;
+  margin-left: 15%;
+  margin-bottom: 10%;
+}
+
+.imguser1 {
+  border-radius: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 50%;
+  margin-left: 15%;
+  margin-bottom: 10%;
 }
 
 .imgicon {
@@ -171,7 +212,7 @@
 </style>
 <script>
 import axios from "axios";
-import NavBar from "../components/NavBar";
+import NavBar from "../../components/NavBar";
 export default {
   //   name: "login",
   components: {
@@ -192,6 +233,8 @@ export default {
       GenderForSelect: ["Male", "Female", "Other"],
       result: "",
       search: "",
+      pic_show: "",
+      pic: "",
       headers: [
         {
           text: "ID",
@@ -283,6 +326,8 @@ export default {
         this.fullname = response.data.name;
         this.email = response.data.email;
         this.gender = response.data.gender;
+        this.pic_show = response.data.picture;
+        this.pic = response.data.picture;
       })
       .catch((err) => {
         console.log(err);
@@ -290,21 +335,60 @@ export default {
   },
 
   methods: {
+    selectImages(event) {
+      this.pic = event.target.files[0];
+    },
     clickToEditFullname() {
       this.editToggleFullname = true;
       this.editFullname = this.fullname;
     },
 
+    updatepicture() {
+      let formData = new FormData();
+      formData.append("file", this.pic);
+      formData.append("id", this.id);
+      formData.append("name", this.fullname);
+      formData.append("email", this.email);
+      formData.append("gender", this.gender);
+
+      axios
+        .put("http://localhost:3002/users/update", formData)
+        .then((response) => {
+          const data = JSON.parse(localStorage.getItem("userData"));
+          console.log(data)
+          axios
+            .get(
+              "http://localhost:3000/users/" +
+                data.username +
+                "/" +
+                data.password
+            )
+            .then((response) => {
+              console.log(response.data);
+              this.pic_show = response.data.picture;
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+          console.log(response.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
     updateFullname() {
       this.editToggleFullname = false;
       this.fullname = this.editFullname;
+
+      let formData = new FormData();
+      formData.append("file", this.pic);
+      formData.append("id", this.id);
+      formData.append("name", this.fullname);
+      formData.append("email", this.email);
+      formData.append("gender", this.gender);
       axios
-        .put("http://localhost:3002/users/update", {
-          id: this.id,
-          name: this.fullname,
-          email: this.email,
-          gender: this.gender,
-        })
+        .put("http://localhost:3002/users/update", formData)
         .then((response) => {
           console.log(response.data);
         })
@@ -322,13 +406,14 @@ export default {
     updateEmail() {
       this.editToggleEmail = false;
       this.email = this.editEmail;
+      let formData = new FormData();
+      formData.append("file", this.pic);
+      formData.append("id", this.id);
+      formData.append("name", this.fullname);
+      formData.append("email", this.email);
+      formData.append("gender", this.gender);
       axios
-        .put("http://localhost:3002/users/update", {
-          id: this.id,
-          name: this.fullname,
-          email: this.email,
-          gender: this.gender,
-        })
+        .put("http://localhost:3002/users/update", formData)
         .then((response) => {
           console.log(response.data);
         })
@@ -346,13 +431,14 @@ export default {
     updateGender() {
       this.editToggleGender = false;
       this.gender = this.editGender;
+      let formData = new FormData();
+      formData.append("file", this.pic);
+      formData.append("id", this.id);
+      formData.append("name", this.fullname);
+      formData.append("email", this.email);
+      formData.append("gender", this.gender);
       axios
-        .put("http://localhost:3002/users/update", {
-          id: this.id,
-          name: this.fullname,
-          email: this.email,
-          gender: this.gender,
-        })
+        .put("http://localhost:3002/users/update", formData)
         .then((response) => {
           console.log(response.data);
         })
