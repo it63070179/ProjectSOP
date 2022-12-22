@@ -37,21 +37,52 @@
               <v-col cols="2">
                 <v-subheader style="font-size: 20px">Email :</v-subheader>
               </v-col>
-              <v-col cols="4" style="margin-left: -120px; margin-top: 0.5%">
-                <v-text-field
-                  v-model="email"
-                  :rules="[rules.required, rules.email]"
-                  dense
-                ></v-text-field>
+              <v-col cols="4" style="margin-left: -100px; margin-top: 0.5%">
+                <v-text-field v-model="v$.email.$model" dense></v-text-field>
               </v-col>
-              <v-btn
-                color="primary"
-                style="margin-top: 1.5%; margin-left: 5%"
-                @click="addAdmin()"
-                >Add to admin</v-btn
-              >
+              <v-dialog v-model="dialog" persistent max-width="400">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    color="primary"
+                    style="margin-top: 1.5%; margin-left: 5%"
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="addAdmin()"
+                    >Add to admin</v-btn
+                  >
+                </template>
+                <v-card>
+                  <v-card-title class="text-h5"> {{ text }} </v-card-title>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="dialog = false">
+                      OK
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             </v-row>
           </v-card-title>
+          <template v-if="v$.email.$error">
+            <p
+              class="text-subtitle-2 red--text ml-10"
+              v-if="v$.email.required.$invalid"
+            >
+              This field is requried
+            </p>
+            <p
+              class="text-subtitle-2 red--text ml-10"
+              v-else-if="v$.email.minLength.$invalid"
+            >
+              This field should be at least 3 characters long
+            </p>
+            <p
+              class="text-subtitle-2 red--text ml-10"
+              v-else-if="v$.email.ValidateEmail.$invalid"
+            >
+              This field is invalid email
+            </p>
+          </template>
         </v-card>
       </div>
     </v-content>
@@ -59,12 +90,36 @@
 </template>
 
 <script>
+import { useVuelidate } from "@vuelidate/core";
+import { required, minLength } from "@vuelidate/validators";
 import axios from "axios";
+const ValidateEmail = (value) => {
+  const ReduxEmail =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (value.match(ReduxEmail)) {
+    // console.log("Email Match");
+    return true;
+  } else {
+    // console.log("Email Not Match");
+    return false;
+  }
+};
 export default {
   name: "admin-addAdmin",
+
+  setup() {
+    return {
+      v$: useVuelidate(),
+    };
+  },
+
   data() {
     return {
       result: "",
+      DataUserinDB: [],
+      findEmailinDB: undefined,
+      text: "",
+      dialog: false,
       items: [
         {
           title: "User Details",
@@ -106,6 +161,27 @@ export default {
       },
     };
   },
+
+  validations() {
+    return {
+      email: { required, minLength: minLength(3), ValidateEmail },
+    };
+  },
+
+  mounted() {
+    axios
+      .get("http://localhost:3000/users")
+      .then((response) => {
+        // console.log(response.data);
+        response.data.forEach((element) => {
+          this.DataUserinDB.push(element);
+        });
+        console.log(this.DataUserinDB);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
   methods: {
     logout() {
       localStorage.removeItem("userData");
@@ -121,6 +197,24 @@ export default {
     },
 
     addAdmin() {
+      this.findEmailinDB = this.DataUserinDB.find(
+        (element) => element.email === this.email
+      );
+      console.log(this.findEmailinDB);
+      if (this.findEmailinDB === undefined) {
+        this.text = "don't have email in system";
+        console.log("don't have email in system");
+        return;
+      } else if (this.findEmailinDB.role === "doctor") {
+        this.text = "this user is role doctor already";
+        console.log("this user is role doctor already");
+        return;
+      } else if (this.findEmailinDB.role === "admin") {
+        this.text = "this user is role admin already";
+        console.log("this user is role admin already");
+        return;
+      }
+      this.text = "Add Admin Success";
       axios
         .put("http://localhost:3002/users/addadmin", {
           email: this.email,
