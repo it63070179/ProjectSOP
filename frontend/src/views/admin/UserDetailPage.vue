@@ -1,12 +1,17 @@
 <template>
-  <v-app>
+  <div>
     <v-app-bar class="flex-grow-0" app dark>
       <v-app-bar-title>User Details</v-app-bar-title>
     </v-app-bar>
     <v-navigation-drawer app dark>
-      <v-divider style="margin-top:25%"></v-divider>
+      <v-divider style="margin-top: 25%"></v-divider>
       <v-list dense nav>
-        <v-list-item v-for="item in items" :to="item.path" :key="item.title" link>
+        <v-list-item
+          v-for="item in items"
+          :to="item.path"
+          :key="item.title"
+          link
+        >
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
@@ -46,77 +51,102 @@
         </v-card>
       </div>
     </v-content>
-  </v-app>
+  </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
-  export default {
-    name: 'admin-userDetailPadge',
-    data() {
-      return {
-        result: '',
-        items: [
-          { title: 'User Details', icon: 'mdi-account-circle', path: '/userDetails'},
-          { title: 'Appointments', icon: 'mdi-calendar-clock', path: '/appointments' },
-          { title: 'Dotor Details', icon: 'mdi-card-account-details', path: '/doctorDetails' },
-          { title: 'Admin Details', icon: 'mdi-card-account-details-star', path: '/adminDetails' },
-          { title: 'Add Doctor', icon: 'mdi-account-plus-outline', path: '/addDoctor' },
-          { title: 'Add Admin', icon: 'mdi-account-plus', path: '/addAdmin' },
-        ],
-        search: '',
-        headers: [
-          {
-            text: 'ID',
-            align: 'start',
-            filterable: false,
-            value: 'id',
-          },
-          { text: 'Name', value: 'name' },
-          { text: 'Email', value: 'email' },
-          { text: 'Gender', value: 'gender' },
-          { text: 'Role', value: 'role' },
-        ],
-        users: [
-          {
-            id: 1,
-            name: 'User1',
-            email: 'user1@gmail.com',
-            gender: 'male',
-            role: 'admin',
-          },
-          {
-            id: 2,
-            name: 'User2',
-            email: 'user2@gmail.com',
-            gender: 'female',
-            role: 'doctor',
-          },
-          
-        ],
-      }
-    },
-    mounted(){
-        this.getUsers();
-      },
-      methods: {
-        getUsers(){
-          axios
-          .get(`http://localhost:3000/users`)
-          .then((response) => {
-            this.users = response.data;
-          })
-          .catch((error) => {
-            console.log(error);
-          })
+export default {
+  name: "admin-userDetailPadge",
+  data() {
+    return {
+      result: "",
+      items: [
+        {
+          title: "User Details",
+          icon: "mdi-account-circle",
+          path: "/userDetails",
         },
-        logout(){
-          localStorage.removeItem('userData');
-          this.$router.push({
-            name: "LoginPage",
-          });
-        }
-      }
-  }
+        {
+          title: "Appointments",
+          icon: "mdi-calendar-clock",
+          path: "/appointments",
+        },
+        {
+          title: "Dotor Details",
+          icon: "mdi-card-account-details",
+          path: "/doctorDetails",
+        },
+        {
+          title: "Admin Details",
+          icon: "mdi-card-account-details-star",
+          path: "/adminDetails",
+        },
+        {
+          title: "Add Doctor",
+          icon: "mdi-account-plus-outline",
+          path: "/addDoctor",
+        },
+        { title: "Add Admin", icon: "mdi-account-plus", path: "/addAdmin" },
+      ],
+      search: "",
+      headers: [
+        {
+          text: "ID",
+          align: "start",
+          filterable: false,
+          value: "id",
+        },
+        { text: "Name", value: "name" },
+        { text: "Email", value: "email" },
+        { text: "Gender", value: "gender" },
+        { text: "Role", value: "role" },
+      ],
+      users: [
+        {
+          id: 1,
+          name: "User1",
+          email: "user1@gmail.com",
+          gender: "male",
+          role: "admin",
+        },
+        {
+          id: 2,
+          name: "User2",
+          email: "user2@gmail.com",
+          gender: "female",
+          role: "doctor",
+        },
+      ],
+    };
+  },
+  mounted() {
+    this.getUsers();
+  },
+  methods: {
+    getUsers() {
+      axios
+        .get(`http://localhost:3000/users`)
+        .then((response) => {
+          this.users = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    logout() {
+      localStorage.removeItem("userData");
+      const backgroundElement = document.getElementsByClassName(
+        "v-application--wrap"
+      );
+      backgroundElement[0].style.backgroundColor = "#a8dadc";
+      backgroundElement[0].style.justifyContent = "center";
+      backgroundElement[0].style.alignItems = "center";
+      this.$router.push({
+        name: "LoginPage",
+      });
+    },
+  },
+};
 </script>
