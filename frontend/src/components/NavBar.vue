@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <div>
     <v-toolbar dense color="#324B4C" elevation="4" prominent>
       <router-link to="/">
         <v-img
@@ -27,7 +27,7 @@
         >logout</v-btn
       >
     </v-toolbar>
-  </v-app>
+  </div>
 </template>
 <style>
 .btn {
@@ -44,6 +44,14 @@ export default {
   methods: {
     logout() {
       localStorage.removeItem("userData");
+      const backgroundElement = document.getElementsByClassName(
+        "v-application--wrap"
+      );
+      console.log(backgroundElement[0]);
+      backgroundElement[0].style.backgroundColor = "#a8dadc";
+      backgroundElement[0].style.justifyContent = "center";
+      backgroundElement[0].style.alignItems = "center";
+      backgroundElement[0].style.minHeight = "100vh";
       this.$router.push({
         name: "LoginPage",
       });
