@@ -45,6 +45,7 @@
   justify-content: center;
   align-items: center;
 }
+
 .icon_img {
   width: 40%;
   margin-bottom: -2%;
@@ -95,6 +96,11 @@ export default {
       Password: "",
     };
   },
+
+  unmounted() {
+    this.style.remove();
+  },
+
   methods: {
     login() {
       axios
@@ -105,15 +111,34 @@ export default {
           console.log(response);
           if (response.data != "") {
             localStorage.setItem("userData", JSON.stringify(response.data));
+            const backgroundElement = document.getElementsByClassName(
+              "v-application--wrap"
+            );
+            const button =
+              document.getElementsByClassName("theme--light v-btn");
+            const buttonElement =
+              document.getElementsByClassName("v-btn__content");
             if (response.data.role == "user") {
+              backgroundElement[0].style.justifyContent = "normal";
+              backgroundElement[0].style.alignItems = "normal";
               this.$router.push({
                 name: "HomePage",
               });
             } else if (response.data.role == "admin") {
+              backgroundElement[0].style.backgroundColor = "#fff";
+              backgroundElement[0].style.justifyContent = "normal";
+              backgroundElement[0].style.alignItems = "normal";
+              button[0].style.color = "rgba(0, 0, 0, 0.87)";
+              buttonElement[0].style.color = "rgba(0, 0, 0, 0.87)";
               this.$router.push({
                 name: "UserDetailPage",
               });
             } else if (response.data.role == "doctor") {
+              backgroundElement[0].style.backgroundColor = "#fff";
+              backgroundElement[0].style.justifyContent = "normal";
+              backgroundElement[0].style.alignItems = "normal";
+              button[0].style.color = "rgba(0, 0, 0, 0.87)";
+              buttonElement[0].style.color = "rgba(0, 0, 0, 0.87)";
               this.$router.push({
                 name: "doctor-appointment",
               });
